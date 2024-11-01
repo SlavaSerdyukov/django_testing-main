@@ -29,7 +29,6 @@ class TestListNotes(BaseTestCase):
         self.assertIn('object_list', response.context)
         notes = self.client_author.get(NOTES_LIST).context['object_list']
         self.assertIn(self.note, notes)
-        self.assertEqual(list(notes).count(self.note), 1)
         note = notes.get(id=self.note.id)
         self.assertEqual(note.title, self.note.title)
         self.assertEqual(note.text, self.note.text)

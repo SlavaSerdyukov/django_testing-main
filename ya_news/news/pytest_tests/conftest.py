@@ -17,7 +17,6 @@ TEXT = 'Текст'
 @pytest.fixture(autouse=True)
 def enable_db(db):
     """Доступ к базе данных для всех тестов без маркера 'django_db'."""
-    pass
 
 
 @pytest.fixture
@@ -28,7 +27,7 @@ def comment_delete_url(comment):
 
 @pytest.fixture
 def news_detail_url(news):
-    """Конфигурация домащней страницы."""
+    """Конфигурация домашней страницы."""
     return reverse('news:detail', args=(news.id,))
 
 
@@ -94,7 +93,7 @@ def reader(django_user_model):
 
 @pytest.fixture
 def client_reader(reader):
-    """Читатель пользователь."""
+    """Читатель-клиент."""
     client = Client()
     client.force_login(user=reader)
     return client
@@ -138,9 +137,14 @@ def list_news():
 @pytest.fixture
 def list_comments(news, author):
     """Список комментариев."""
+    comments = []
     for index in range(2):
-        Comment.objects.create(
+        comment = Comment.objects.create(
             author=author,
             news=news,
             text=f'{TEXT} {index}',
         )
+        comment.created = datetime.now() - timedelta(minutes=index)
+        comment.save()
+        comments.append(comment)
+    return comments

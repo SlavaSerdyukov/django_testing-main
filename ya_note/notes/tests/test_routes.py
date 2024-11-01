@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from django.contrib.auth import get_user
 
 from .common import (
     BaseTestCase,
@@ -35,7 +36,8 @@ class TestRoutes(BaseTestCase):
         )
 
         for url, client, status in urls_client_statuses:
-            with self.subTest(url=url, client=client, expected_result=status):
+            user = get_user(client)
+            with self.subTest(url=url, client=user, expected_result=status):
                 self.assertEqual(client.get(url).status_code, status)
 
     def test_redirect_for_anonymous_client(self):
