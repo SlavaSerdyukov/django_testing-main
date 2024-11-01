@@ -55,7 +55,7 @@ def test_pages_no_availability_for_anonymous_user(
     url, client_user, expected_url
 ):
     """
-    Проверяет, что анонимного пользователя 
+    Проверяет, что анонимного пользователя
     перенаправляют на ожидаемую страницу.
     """
     response = client_user.get(url)

@@ -62,7 +62,9 @@ def test_author_can_edit_own_comment(client_author, comment_edit_url, comment):
     assert comment_edit.author == comment.author
 
 
-def test_author_can_delete_own_comment(client_author, comment_delete_url, comment):
+def test_author_can_delete_own_comment(
+        client_author, comment_delete_url, comment
+):
     """
     Проверяет, что автор может удалить свой комментарий.
     """
@@ -73,7 +75,9 @@ def test_author_can_delete_own_comment(client_author, comment_delete_url, commen
     assert not Comment.objects.filter(pk=comment.pk).exists()
 
 
-def test_reader_cant_edit_authors_comment(client_reader, comment_edit_url, comment):
+def test_reader_cant_edit_authors_comment(
+        client_reader, comment_edit_url, comment
+):
     """
     Проверяет, что читатель не может отредактировать чужой комментарий.
     """
@@ -87,7 +91,9 @@ def test_reader_cant_edit_authors_comment(client_reader, comment_edit_url, comme
     assert comment_cant_edit.author == comment.author
 
 
-def test_reader_cant_delete_authors_comment(client_reader, comment_delete_url, comment):
+def test_reader_cant_delete_authors_comment(
+        client_reader, comment_delete_url, comment
+):
     """
     Проверяет, что читатель не может удалить чужой комментарий.
     """
