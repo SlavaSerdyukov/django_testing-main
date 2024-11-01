@@ -37,9 +37,7 @@ CLIENT_READER = lf('client_reader')
     ]
 )
 def test_pages_availability_for_users(url, client_user, status):
-    """
-    Проверяет доступность страниц для различных пользователей.
-    """
+    """Проверяет доступность страниц для различных пользователей."""
     response = client_user.get(url)
     assert response.status_code == status
 
@@ -54,9 +52,8 @@ def test_pages_availability_for_users(url, client_user, status):
 def test_pages_no_availability_for_anonymous_user(
     url, client_user, expected_url
 ):
-    """
-    Проверяет, что анонимного пользователя
-    перенаправляют на ожидаемую страницу.
+    """Проверяет, что анонимного пользователя перенаправляют на
+    ожидаемую страницу.
     """
     response = client_user.get(url)
     assertRedirects(response, expected_url)
