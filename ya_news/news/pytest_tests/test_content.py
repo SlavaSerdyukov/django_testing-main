@@ -1,41 +1,49 @@
-import pytest
-
-from news.models import Article, Comment
-
-
-@pytest.mark.django_db
-def test_article_creation():
-    """Проверяет создание статьи."""
-    article = Article.objects.create(
-        title="Тестовая статья",
-        content="Содержимое тестовой статьи."
-    )
-    assert article.title == "Тестовая статья"
-    assert article.content == "Содержимое тестовой статьи."
+from django.conf import settings
+from news.forms import CommentForm
 
 
-@pytest.mark.django_db
-def test_article_str_method():
-    """Проверяет метод __str__ статьи."""
-    article = Article.objects.create(
-        title="Тестовая статья",
-        content="Содержимое тестовой статьи."
-    )
-    assert str(article) == "Тестовая статья"
+def test_max_news_on_homepage(client, news_home_url, list_news):
+    """Проверка, что на главной странице не более X новостей."""
+    response = client.get(news_home_url)
+    assert 'object_list' in response.context
+    assert response.context['object_list'].count(
+    ) == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-@pytest.mark.django_db
-def test_comment_creation(article):
-    """Проверяет создание комментария к статье."""
-    comment = Comment.objects.create(
-        article=article,
-        text="Это тестовый комментарий."
-    )
-    assert comment.article == article
-    assert comment.text == "Это тестовый комментарий."
+def test_news_sorted_by_freshness(client, news_home_url, list_news):
+    """
+    Проверка сортировки новостей от самой свежей к самой старой.
+    Свежие новости в начале списка.
+    """
+    response = client.get(news_home_url)
+    assert 'object_list' in response.context
+    all_dates = [news.date for news in response.context['object_list']]
+    assert all_dates == sorted(all_dates, reverse=True)
 
 
-@pytest.mark.django_db
-def test_comment_str_method(comment):
-    """Проверяет метод __str__ комментария."""
-    assert str(comment) == comment.text[:20]
+def test_comments_sorted_chronologically(
+    client, news_detail_url, list_comments
+):
+    """
+    Проверка сортировки комментариев в хронологическом порядке:
+    старые в начале списка, новые — в конце.
+    """
+    all_dates = [
+        comment.created
+        for comment in client.get(news_detail_url)
+        .context['news']
+        .comment_set.all()
+    ]
+    assert all_dates == sorted(all_dates)
+
+
+def test_anonymous_client_has_no_form(client, news_detail_url):
+    """Проверка, что анонимный клиент не видит форму комментариев."""
+    assert 'form' not in client.get(news_detail_url).context
+
+
+def test_authorized_client_has_form(client_reader, news_detail_url):
+    """Проверка, что авторизованный клиент видит форму комментариев."""
+    context = client_reader.get(news_detail_url).context
+    assert 'form' in context
+    assert isinstance(context['form'], CommentForm)
