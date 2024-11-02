@@ -52,8 +52,6 @@ def test_pages_availability_for_users(url, client_user, status):
 def test_pages_no_availability_for_anonymous_user(
     url, client_user, expected_url
 ):
-    """Проверяет, что анонимного пользователя перенаправляют на
-    ожидаемую страницу.
-    """
+    """Проверяет, что анонимного пользователя направляют на нужную страницу."""
     response = client_user.get(url)
     assertRedirects(response, expected_url)

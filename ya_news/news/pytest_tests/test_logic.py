@@ -1,7 +1,5 @@
 from http import HTTPStatus
-
 import pytest
-
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
@@ -12,10 +10,7 @@ FORM_NEW_DATA = {'text': 'Новый текст комментария'}
 
 @pytest.mark.parametrize('bad_word', BAD_WORDS)
 def test_by_bad_words(client_author, bad_word, news_detail_url):
-    """ 
-    Проверяет, что при использовании запрещенных слов 
-    форма возвращает ошибку. 
-    """
+    """Проверяет, на использование запрещенных слов форма возвращает ошибку."""
     comments_before = Comment.objects.count()
     BAD_WORD_DATA['text'] = BAD_WORD_DATA['text'].format(bad_word=bad_word)
     response = client_author.post(news_detail_url, data=BAD_WORD_DATA)
@@ -24,19 +19,17 @@ def test_by_bad_words(client_author, bad_word, news_detail_url):
 
 
 def test_anonymous_client_cant_create_comment(client, news_detail_url):
-    """ 
-    Проверяет, что анонимный пользователь не может оставить комментарий. 
-    """
+    """Проверяет, что анонимный пользователь не может оставить комментарий."""
     comments_before = Comment.objects.count()
     response = client.post(news_detail_url, data=FORM_DATA)
     assert response.status_code == HTTPStatus.FOUND
     assert Comment.objects.count() == comments_before
 
 
-def test_client_can_create_comment(client_reader, reader, news, news_detail_url):
-    """ 
-    Проверяет, что авторизованный пользователь может оставить комментарий. 
-    """
+def test_client_can_create_comment(
+    client_reader, reader, news, news_detail_url
+):
+    """Проверяет, что авторизованный юзер может оставить комментарий."""
     Comment.objects.all().delete()
     comments_before = Comment.objects.count()
     response = client_reader.post(news_detail_url, data=FORM_DATA)
@@ -49,9 +42,7 @@ def test_client_can_create_comment(client_reader, reader, news, news_detail_url)
 
 
 def test_author_can_edit_own_comment(client_author, comment_edit_url, comment):
-    """ 
-    Проверяет, что автор может отредактировать свой комментарий. 
-    """
+    """Проверяет, что автор может отредактировать свой комментарий."""
     comments_before = Comment.objects.count()
     response = client_author.post(comment_edit_url, data=FORM_NEW_DATA)
     assert response.status_code == HTTPStatus.FOUND
@@ -65,9 +56,7 @@ def test_author_can_edit_own_comment(client_author, comment_edit_url, comment):
 def test_author_can_delete_own_comment(
     client_author, comment_delete_url, comment
 ):
-    """ 
-    Проверяет, что автор может удалить свой комментарий. 
-    """
+    """Проверяет, что автор может удалить свой комментарий."""
     comments_before = Comment.objects.count()
     response = client_author.post(comment_delete_url)
     assert response.status_code == HTTPStatus.FOUND
@@ -78,9 +67,7 @@ def test_author_can_delete_own_comment(
 def test_reader_cant_edit_authors_comment(
     client_reader, comment_edit_url, comment
 ):
-    """ 
-    Проверяет, что читатель не может отредактировать чужой комментарий. 
-    """
+    """Проверяет, что читатель не может отредактировать чужой комментарий."""
     comments_before = Comment.objects.count()
     response = client_reader.post(comment_edit_url, data=FORM_NEW_DATA)
     assert response.status_code == HTTPStatus.NOT_FOUND
@@ -94,9 +81,7 @@ def test_reader_cant_edit_authors_comment(
 def test_reader_cant_delete_authors_comment(
     client_reader, comment_delete_url, comment
 ):
-    """ 
-    Проверяет, что читатель не может удалить чужой комментарий. 
-    """
+    """Проверяет, что читатель не может удалить комментарий автора."""
     comments_before = Comment.objects.count()
     response = client_reader.post(comment_delete_url)
     assert response.status_code == HTTPStatus.NOT_FOUND
