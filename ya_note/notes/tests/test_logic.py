@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from pytils.translit import slugify
 
-from notes.common import (
+from tests.common import (
     BaseTestCase,
     NOTES_ADD,
     NOTES_DELETE,
