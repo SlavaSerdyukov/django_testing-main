@@ -137,14 +137,10 @@ def list_news():
 @pytest.fixture
 def list_comments(news, author):
     """Список комментариев."""
-    comments = []
     for index in range(2):
-        comment = Comment.objects.create(
+        Comment.objects.create(
             author=author,
             news=news,
             text=f'{TEXT} {index}',
+            created=datetime.now() - timedelta(minutes=index)
         )
-        comment.created = datetime.now() - timedelta(minutes=index)
-        comment.save()
-        comments.append(comment)
-    return comments

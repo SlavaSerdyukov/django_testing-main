@@ -1,5 +1,7 @@
 from http import HTTPStatus
+
 import pytest
+
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
@@ -35,7 +37,7 @@ def test_client_can_create_comment(
     response = client_reader.post(news_detail_url, data=FORM_DATA)
     assert response.status_code == HTTPStatus.FOUND
     assert Comment.objects.count() == comments_before + 1
-    comment_new = Comment.objects.get(id=Comment.objects.latest('id').id)
+    comment_new = Comment.objects.get()
     assert comment_new.text == FORM_DATA['text']
     assert comment_new.news == news
     assert comment_new.author == reader

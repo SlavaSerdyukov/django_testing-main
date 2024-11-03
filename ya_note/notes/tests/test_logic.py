@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from pytils.translit import slugify
 
-from .common import (
+from notes.common import (
     BaseTestCase,
     NOTES_ADD,
     NOTES_DELETE,
@@ -16,12 +16,14 @@ from notes.models import Note
 class TestNoteCreation(BaseTestCase):
 
     def base_check_create_note(self, form, expected_slug):
+        Note.objects.all().delete()
 
         notes_before = Note.objects.count()
         self.client_author.post(NOTES_ADD, data=form)
         notes_after = Note.objects.count()
         self.assertEqual(notes_after - notes_before, 1)
-        note = Note.objects.last()
+
+        note = Note.objects.get()
         self.assertEqual(note.title, form['title'])
         self.assertEqual(note.text, form['text'])
         self.assertEqual(note.author, self.author)

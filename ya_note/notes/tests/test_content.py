@@ -1,4 +1,4 @@
-from .common import (
+from notes.common import (
     BaseTestCase,
     NOTE_SLUG,
     NOTES_ADD,
