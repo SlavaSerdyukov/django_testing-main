@@ -2,6 +2,7 @@ WARNING = "Это предупреждение"
 NOTES_ADD = "/notes/add/"
 NOTES_EDIT = "/notes/edit/"
 NOTES_LIST = "/notes/list/"
+NOTES_DELETE = "/notes/delete/"
 NOTE_SLUG = "slug-note"
 
 
