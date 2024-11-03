@@ -138,9 +138,10 @@ def list_news():
 def list_comments(news, author):
     """Список комментариев."""
     for index in range(2):
-        Comment.objects.create(
+        comment = Comment.objects.create(
             author=author,
             news=news,
             text=f'{TEXT} {index}',
-            created=datetime.now() - timedelta(minutes=index)
         )
+        comment.created = datetime.now() - timedelta(minutes=index)
+        comment.save()
