@@ -3,6 +3,7 @@ NOTES_ADD = "/notes/add/"
 NOTES_EDIT = "/notes/edit/"
 NOTES_LIST = "/notes/list/"
 NOTES_DELETE = "/notes/delete/"
+NOTES_SUCCESS = "/notes/success/"
 NOTE_SLUG = "slug-note"
 
 
